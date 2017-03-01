@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>手机靓号解析工具 v0.1 | wilon.github.io</title>
+        <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+        <style type="text/css">
+        body {font-size: 18px; font-family: "微软雅黑","Arial Narrow",HELVETICA;} td {padding: 10px;} img {width: 120px;} .bs-docs-header, .bs-docs-masthead {position: relative; padding: 30px 0; color: #cdbfe3; text-shadow: 0 1px 0 rgba(0,0,0,.1); background-color: #6f5499; background-image: -webkit-gradient(linear,left top,left bottom,from(#563d7c),to(#6f5499)); background-image: -webkit-linear-gradient(top,#563d7c 0,#6f5499 100%); background-image: -o-linear-gradient(top,#563d7c 0,#6f5499 100%); background-image: linear-gradient(to bottom,#563d7c 0,#6f5499 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#563d7c', endColorstr='#6F5499', GradientType=0); background-repeat: repeat-x; } .bs-docs-header{margin-bottom:40px;font-size:20px}.bs-docs-header h1{margin-top:0;color:#fff}.bs-docs-header p{margin-bottom:0;font-weight:300;line-height:1.4}.bs-docs-header .container{position:relative}.bs-docs-footer {padding-top: 40px; padding-bottom: 40px; margin-top: 100px; color: #777; text-align: center; border-top: 1px solid #e5e5e5; }
+        </style>
+    </head>
+    <body>
+        <div class="bs-docs-header">
+            <div class="container">
+                <img src="./icon.png" style="width: 42px;">
+                手机靓号解析工具 v0.1
+                <a href="https://github.com/wilon/analysis-phone-number/" style="float: right; color: white;">Fork me on Github</a>
+            </div>
+        </div>
+        <div class="container">
+            <div class="col-md-10">
+                <form><textarea class="form-control" rows="18" id="phoneText" placeholder="这里粘贴手机号..."></textarea></form>
+                <br>
+                <div class="col-md-3 col-md-offset-3"></div>
+                <div class="col-md-3 col-md-offset-3">
+                    <button type="button" class="btn btn-primary" id="parsePhoneNum">
+                    &nbsp;&nbsp;&nbsp;提交&nbsp;&nbsp;&nbsp;
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-10"> <br> </div>
+            <div class="col-md-10" id="phoneTable" style="display: none;">
+                <table class="table table-bordered table-striped">
+                  <colgroup>
+                    <col class="col-xs-2">
+                    <col class="col-xs-7">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Desc</th>
+                      <th>PhoneNum</th>
+                    </tr>
+                  </thead>
+                  <tbody id="phoneTbody">
+                  </tbody>
+                </table>
+            </div>
+        </div>
+        <footer class="bs-docs-footer" role="contentinfo">
+            <div class="container">
+                <p><a target="_blank" href="https://wilon.github.io/analysis-phone-number/">Analysis Phone Number</a> by <a target="_blank" href="https://github.com/wilon">wilon</a></p>
+                <p>Add Regx to &nbsp;<a target="_blank" href="https://github.com/wilon/analysis-phone-number">Github Pull Requests</a></p>
+            </div>
+        </footer>
+        <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./phone_rule.js" charset="utf-8"></script>
+        <script type="text/javascript">
+            $(function(){
+                var phoneRegx = /1\d{10}/gm;
+                // textarea focus
+                $('#phoneText').focus();
+                // $("#phoneText").focusin(function() {
+                //     $(this).attr('rows', '23');
+                // });
+                // submit button click
+                $('#parsePhoneNum').on('click', function () {
+                    var phoneText = $('#phoneText').val();
+                    // not empty
+                    if (phoneText == '') {
+                        alert('请输入手机号');
+                        $('#phoneText').focus();
+                        return;
+                    }
+                    // show table
+                    $('#phoneTable').show();
+                    var _targetTop = $('#phoneTable').offset().top;
+                    $("html,body").animate({scrollTop:_targetTop}, 300);
+                    // $('#phoneText').attr('rows', '3');
+                    $('#phoneTbody').empty();
+                    // regx phone num
+                    var phoneArray = phoneText.match(phoneRegx);
+                    for(var desc in phoneRules) {
+                        var phoneNum = [];
+                        var regx = phoneRules[desc];
+                        $.map(phoneArray, function(item) {
+                            if (regx.test(item)) {
+                                phoneNum.push(item.replace(regx, '<code>$&</code>'));
+                            }
+                        });
+                        // output
+                        var phoneNumTr = (phoneNum.length == 0) ? '-' : phoneNum.join(', ');
+                        var tr = `<tr> <th scope="row"> <code>${desc}</code> </th> <td>${phoneNumTr}</td> </tr>`
+                        $('#phoneTbody').append(tr);
+                    }
+                });
+            })
+        </script>
+    </body>
+</html>
