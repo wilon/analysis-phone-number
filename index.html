@@ -22,8 +22,8 @@
                 <br>
                 <div class="col-md-3 col-md-offset-3"></div>
                 <div class="col-md-3 col-md-offset-3">
-                    <button type="button" class="btn btn-primary" id="parsePhoneNum">
-                    &nbsp;&nbsp;&nbsp;提交&nbsp;&nbsp;&nbsp;
+                    <button type="button" class="btn btn-primary" id="parsePhoneNum" disabled="disabled">
+                    &nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;
                     </button>
                 </div>
             </div>
@@ -47,15 +47,16 @@
         </div>
         <footer class="bs-docs-footer" role="contentinfo">
             <div class="container">
-                <p><a target="_blank" href="https://wilon.github.io/analysis-phone-number/">Analysis Phone Number</a> by <a target="_blank" href="https://github.com/wilon">wilon</a></p>
-                <p>Add Regx to &nbsp;<a target="_blank" href="https://github.com/wilon/analysis-phone-number">Github Pull Requests</a></p>
+                <p>by <a target="_blank" href="https://github.com/wilon">wilon</a></p>
+                <p>提交规则，您可以 &nbsp;<a target="_blank" href="https://github.com/wilon/analysis-phone-number">Github Pull Requests</a></p>
             </div>
         </footer>
         <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="./phone_rule.js" charset="utf-8"></script>
         <script type="text/javascript">
             $(function(){
-                var phoneRegx = /1\d{10}/gm;
+                $('#parsePhoneNum').removeAttr('disabled').text('提交');
+                var phoneRegx = /1\d{10}\D/gm;
                 // textarea focus
                 $('#phoneText').focus();
                 // $("#phoneText").focusin(function() {
@@ -63,7 +64,7 @@
                 // });
                 // submit button click
                 $('#parsePhoneNum').on('click', function () {
-                    var phoneText = $('#phoneText').val();
+                    var phoneText = $('#phoneText').val() + '#';
                     // not empty
                     if (phoneText == '') {
                         alert('请输入手机号');
